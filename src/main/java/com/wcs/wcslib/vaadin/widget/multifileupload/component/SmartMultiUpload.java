@@ -136,6 +136,12 @@ public class SmartMultiUpload extends CustomComponent {
         this.enabled = enabled;
         initEnabled();
     }
+    
+    // Added JCD
+    public void focus() {
+    	upload.focus();
+    }
+
 
     private void createUpload(boolean multiple) {
         if (!multiple || isBrowserNotHtml5Capable()) {

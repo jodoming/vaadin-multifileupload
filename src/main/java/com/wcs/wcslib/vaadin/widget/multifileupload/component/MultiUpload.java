@@ -45,6 +45,8 @@ public class MultiUpload extends AbstractComponent implements LegacyComponent, U
     private List<Long> interruptedFileIds = new ArrayList<>();
     private MultiUploadHandler receiver;
     private String buttonCaption = "...";
+    // Added JCD
+    private boolean isFocused;
     private boolean uploading;
     private boolean ready;
     private boolean interrupted = false;
@@ -261,4 +263,11 @@ public class MultiUpload extends AbstractComponent implements LegacyComponent, U
     public void setMimeTypeErrorMsgPattern(String pattern) {
         this.mimeTypeErrorMsg = pattern;
     }
+
+    // Added JCD
+	@Override
+	public void focus() {
+		this.focus();
+		this.isFocused = true;
+	}
 }

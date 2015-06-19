@@ -35,6 +35,8 @@ public interface UploadComponent extends Component {
     public void setMimeTypeErrorMsgPattern(String pattern);
 
     public void setButtonCaption(String buttonCaption);
+    
+    public void focus();
 
     public void interruptUpload(long fileId);
 }

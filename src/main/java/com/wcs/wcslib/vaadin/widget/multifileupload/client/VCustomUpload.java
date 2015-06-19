@@ -15,103 +15,135 @@
  */
 package com.wcs.wcslib.vaadin.widget.multifileupload.client;
 
-import com.vaadin.client.ui.VNotification;
-import com.vaadin.client.ui.VUpload;
-import com.vaadin.client.ui.dd.VHtml5File;
+import java.util.List;
+
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.Node;
+import com.google.gwt.user.client.ui.Focusable;
 import com.vaadin.client.VConsole;
 import com.vaadin.client.ui.Icon;
-import java.util.List;
+import com.vaadin.client.ui.VNotification;
+import com.vaadin.client.ui.VUpload;
+import com.vaadin.client.ui.dd.VHtml5File;
 
 /**
  *
  * @author gergo
  */
-public class VCustomUpload extends VUpload {
+public class VCustomUpload extends VUpload implements Focusable,
+		com.vaadin.client.Focusable {
 
-    private long maxFileSize;
-    private String sizeErrorMsg;
-    private String mimeTypeErrorMsg;
-    private List<String> acceptedMimeTypes;
-    private InputElement input;
-    public Icon icon;
+	private long maxFileSize;
+	private String sizeErrorMsg;
+	private String mimeTypeErrorMsg;
+	private List<String> acceptedMimeTypes;
+	private InputElement input;
+	public Icon icon;
 
-    @Override
-    public void submit() {
-        if (checkSize()) {
-            super.submit();
-        } else {
-            ((InputElement) fu.getElement().cast()).setValue(null);
-        }
-    }
+	@Override
+	public void submit() {
+		if (checkSize()) {
+			super.submit();
+		} else {
+			((InputElement) fu.getElement().cast()).setValue(null);
+		}
+	}
 
-    private boolean isValidFileSize(VHtml5File file) {
-        if (file.getSize() > maxFileSize || file.getSize() <= 0) {
-            String formattedErrorMsg = UploadClientUtil.getSizeErrorMessage(
-                    sizeErrorMsg, maxFileSize, file.getSize(), file.getName());
-            VNotification.createNotification(1000,
-                    client.getUIConnector().getWidget()).show(formattedErrorMsg, VNotification.CENTERED, "warning");
-            return false;
-        }
-        return true;
-    }
+	private boolean isValidFileSize(VHtml5File file) {
+		if (file.getSize() > maxFileSize || file.getSize() <= 0) {
+			String formattedErrorMsg = UploadClientUtil.getSizeErrorMessage(
+					sizeErrorMsg, maxFileSize, file.getSize(), file.getName());
+			VNotification.createNotification(1000,
+					client.getUIConnector().getWidget()).show(
+					formattedErrorMsg, VNotification.CENTERED, "warning");
+			return false;
+		}
+		return true;
+	}
 
-    private boolean isValidMimeType(VHtml5File file) {
-        if (acceptedMimeTypes != null && !acceptedMimeTypes.isEmpty() && !acceptedMimeTypes.contains(file.getType())) {
-            String formattedErrorMsg = UploadClientUtil.getMimeTypeErrorMessage(mimeTypeErrorMsg, file.getName());
-            VNotification.createNotification(1000,
-                    client.getUIConnector().getWidget()).show(formattedErrorMsg, VNotification.CENTERED, "warning");
-            return false;
-        }
-        return true;
-    }
+	private boolean isValidMimeType(VHtml5File file) {
+		if (acceptedMimeTypes != null && !acceptedMimeTypes.isEmpty()
+				&& !acceptedMimeTypes.contains(file.getType())) {
+			String formattedErrorMsg = UploadClientUtil
+					.getMimeTypeErrorMessage(mimeTypeErrorMsg, file.getName());
+			VNotification.createNotification(1000,
+					client.getUIConnector().getWidget()).show(
+					formattedErrorMsg, VNotification.CENTERED, "warning");
+			return false;
+		}
+		return true;
+	}
 
-    private boolean checkSize() {
-        try {
-            InputElement ie = (InputElement) fu.getElement().cast();
-            JsArray<VHtml5File> files = getFiles(ie);
-            for (int i = 0; i < files.length(); i++) {
-                VHtml5File file = files.get(i);
-                if (!isValidFileSize(file) || !isValidMimeType(file)) {
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            VConsole.error("Detecting file size failed");
-        }
-        return true;
-    }
+	private boolean checkSize() {
+		try {
+			InputElement ie = (InputElement) fu.getElement().cast();
+			JsArray<VHtml5File> files = getFiles(ie);
+			for (int i = 0; i < files.length(); i++) {
+				VHtml5File file = files.get(i);
+				if (!isValidFileSize(file) || !isValidMimeType(file)) {
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			VConsole.error("Detecting file size failed");
+		}
+		return true;
+	}
 
-    private static native final JsArray<VHtml5File> getFiles(InputElement ie) /*-{
-     return ie.files;
-     }-*/;
+	private static native final JsArray<VHtml5File> getFiles(InputElement ie) /*-{
+																				return ie.files;
+																				}-*/;
 
-    private InputElement getInput() {
-        if (input == null || !getElement().isOrHasChild((Node) input)) {
-            input = fu.getElement().cast();
-        }
-        return input;
-    }
+	private InputElement getInput() {
+		if (input == null || !getElement().isOrHasChild((Node) input)) {
+			input = fu.getElement().cast();
+		}
+		return input;
+	}
 
-    public void setMaxFileSize(long maxFileSize) {
-        this.maxFileSize = maxFileSize;
-    }
+	public void setMaxFileSize(long maxFileSize) {
+		this.maxFileSize = maxFileSize;
+	}
 
-    public void setSizeErrorMsg(String sizeErrorMsg) {
-        this.sizeErrorMsg = sizeErrorMsg;
-    }
+	public void setSizeErrorMsg(String sizeErrorMsg) {
+		this.sizeErrorMsg = sizeErrorMsg;
+	}
 
-    public void setAcceptFilter(String acceptFilter) {
-        getInput().setAccept(acceptFilter);
-    }
+	public void setAcceptFilter(String acceptFilter) {
+		getInput().setAccept(acceptFilter);
+	}
 
-    public void setMimeTypeErrorMsg(String mimeTypeErrorMsg) {
-        this.mimeTypeErrorMsg = mimeTypeErrorMsg;
-    }
+	public void setMimeTypeErrorMsg(String mimeTypeErrorMsg) {
+		this.mimeTypeErrorMsg = mimeTypeErrorMsg;
+	}
 
-    public void setAcceptedMimeTypes(List<String> acceptedMimeTypes) {
-        this.acceptedMimeTypes = acceptedMimeTypes;
-    }
+	public void setAcceptedMimeTypes(List<String> acceptedMimeTypes) {
+		this.acceptedMimeTypes = acceptedMimeTypes;
+	}
+
+	@Override
+	public int getTabIndex() {
+		return submitButton.getTabIndex();
+	}
+
+	@Override
+	public void setAccessKey(char key) {
+		submitButton.setAccessKey(key);
+	}
+
+	@Override
+	public void setFocus(boolean focused) {
+		submitButton.setFocus(focused);
+	}
+
+	@Override
+	public void setTabIndex(int index) {
+		submitButton.setTabIndex(index);
+	}
+
+	@Override
+	public void focus() {
+		setFocus(true);
+	}
 }

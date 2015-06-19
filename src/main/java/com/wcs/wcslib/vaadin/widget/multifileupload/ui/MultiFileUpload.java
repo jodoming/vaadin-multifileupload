@@ -19,6 +19,7 @@ import com.vaadin.server.Resource;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Notification;
 import com.wcs.wcslib.vaadin.widget.multifileupload.component.SmartMultiUpload;
+
 import java.util.List;
 
 /**
@@ -175,4 +176,11 @@ public class MultiFileUpload extends CustomComponent {
         super.detach();
         uploadStatePanel.getWindow().removePanel(uploadStatePanel);
     }
+    
+    // Added JCD
+    @Override
+    public void focus() {
+    	smartUpload.focus();
+    }
+
 }
